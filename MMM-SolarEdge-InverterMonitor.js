@@ -9,8 +9,12 @@
 
 Module.register("MMM-SolarEdge-InverterMonitor", {
 	defaults: {
-		updateInterval: 5000,
-		retryDelay: 5000
+		updateInterval: 10000,
+		retryDelay: 5000,
+		server: "http://localhost:8081/data?k=1234",
+		maxProduction: 2500,
+		maxConsumption: -100,
+		maxTemperature: 70
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
@@ -24,30 +28,28 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		this.loaded = false;
 
 		// Schedule update timer.
-		this.getData();
+
+		self.getData();
 		setInterval(function () {
 			self.updateDom();
 		}, this.config.updateInterval);
+
 	},
 
 	/*
 	 * getData
-	 * function example return data and show it in the module wrapper
-	 * get a URL request
 	 *
 	 */
 	getData: function () {
 		var self = this;
 
-		var urlApi = "http://localhost:8081/data?k=1234";
+		var urlApi = self.config.server;
 		var retry = true;
 
 		var dataRequest = new XMLHttpRequest();
 		dataRequest.open("GET", urlApi, true);
 		dataRequest.onreadystatechange = function () {
-			console.log(this.readyState);
 			if (this.readyState === 4) {
-				console.log(this.status);
 				if (this.status === 200) {
 					self.processData(JSON.parse(this.response));
 				} else if (this.status === 401) {
@@ -89,9 +91,11 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 		// create element wrapper for show into the module
 		var wrapper = document.createElement("div");
+		wrapper.id = "InverterMonitor";
+
 		// If this.dataRequest is not empty
 		if (this.dataRequest) {
-			var wrapperDataRequest = document.createElement("div");
+
 
 			var labelDataRequest = document.createElement("label");
 			// Use translate function
@@ -100,12 +104,16 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 			wrapper.appendChild(labelDataRequest);
 
+			var wrapperDataRequest = document.createElement("div");
+			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, self.config.maxProduction);
+			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.maxConsumption);
+			self.showBar(wrapper, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.maxProduction);
+			self.showBar(wrapper, "TEMPERATURE", "Cº", this.dataRequest.Temperature_C, self.config.maxTemperature);
+
 			// check request format 
-			let wrapperProduction = document.createElement("p");
-			wrapperProduction.innerHTML = this.translate("PRODUCTION") + ": " + this.dataRequest.Production_AC_Power_Net_WH;
-			wrapperDataRequest.appendChild(wrapperProduction);
+			/*
 			let wrapperMeter = document.createElement("p");
-			wrapperMeter.innerHTML = this.translate("METER") + ": " + this.dataRequest.Consumption_AC_Power_Meter;
+			wrapperMeter.innerHTML = this.translate("METER") + ": " + ;
 			wrapperDataRequest.appendChild(wrapperMeter);
 			let wrapperConsumption = document.createElement("p");
 			wrapperConsumption.innerHTML = this.translate("CONSUMPTION") + ": " + this.dataRequest.Consumption_AC_Power_Net_WH;
@@ -114,19 +122,36 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			wrapperTemperature.innerHTML = this.translate("TEMPERATURE") + ": " + this.dataRequest.Temperature_C;
 			wrapperDataRequest.appendChild(wrapperTemperature);
 
+			
+*/
 
 			wrapper.appendChild(wrapperDataRequest);
 		}
 
-		// Data from helper
-		if (this.dataNotification) {
-			var wrapperDataNotification = document.createElement("div");
-			// translations  + datanotification
-			wrapperDataNotification.innerHTML = this.translate("UPDATE") + ": " + this.dataNotification.date;
-
-			wrapper.appendChild(wrapperDataNotification);
-		}
 		return wrapper;
+	},
+
+	showBar: function (wrapper, element, unit, data, maxValue) {
+
+		let percent = Math.min(data / maxValue, 1) * 100;
+		let warning = Math.abs(data) > Math.abs(maxValue);
+
+		let labelWrapper = document.createElement("p");
+		labelWrapper.className = "label" + (warning? " warning": "");
+		labelWrapper.innerHTML = this.translate(element) + ": " + data + " " + unit
+		wrapper.appendChild(labelWrapper);
+
+		let newWrapper = document.createElement("div");
+		newWrapper.id = "bar-div-" + element;
+		newWrapper.className = "progress-bar stripes" + (percent < 0.33 ? " high" : percent < 0.5 ? " medium " : " low");
+
+		let spanWrapper = document.createElement("span");
+		spanWrapper.style.width = percent + "%";
+		spanWrapper.className = (data < 0 ? "inverse" : "");
+
+		newWrapper.appendChild(spanWrapper);
+
+		wrapper.appendChild(newWrapper);
 	},
 
 	getScripts: function () {
@@ -151,7 +176,9 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 	processData: function (data) {
 		var self = this;
 		this.dataRequest = data;
-		if (this.loaded === false) { self.updateDom(self.config.animationSpeed); }
+		if (this.loaded === false) {
+			self.updateDom(self.config.animationSpeed);
+		}
 		this.loaded = true;
 
 		// the data if load

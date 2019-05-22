@@ -8,3 +8,83 @@
  * Custom here your css module
  *
  */
+
+
+ /*  Progress Bars https://catalin.red/stylish-css3-progress-bars/ */
+ 
+ p.label {
+     margin: 0.1em;
+     padding: 0.1em;
+     line-height: 0.6em;
+     color: #aaa;
+     font-size: 0.6em;
+ }
+
+ p.warning {
+     color: red;
+     background: url(./warning.png) right center no-repeat;
+ }
+
+ .progress-bar {
+    background-color: #1a1a1a;
+    height: 15px;
+    padding: 5px;
+    width: 100%;
+    margin: 5% 0;         
+    border-radius: 3px;
+    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
+}
+
+.progress-bar span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
+    transition: width .4s ease-in-out;    
+}
+
+.progress-bar span.inverse {
+    float: right;
+}
+
+
+.high span, .low span.inverse {
+    background-color: #f51010;
+    background-image: linear-gradient(top, #f51010, #ad0000);  
+}
+
+.medium span, .medium span.inverse {
+      background-color: #fecf23;
+      background-image: linear-gradient(top, #fecf23, #fd9215);  
+}   
+
+.low span, .high span.inverse {
+      background-color: #a5df41;
+      background-image: linear-gradient(top, #a5df41, #4ca916);  
+}
+
+.stripes span {
+    background-size: 30px 30px;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
+                        transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
+                        transparent 75%, transparent);            
+    
+    animation: animate-stripes 3s linear infinite;             
+}
+
+.stripes span.inverse {
+    background-size: 30px 30px;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
+                        transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
+                        transparent 75%, transparent);            
+    
+    animation: animate-stripes-inverse 3s linear infinite;             
+}
+
+@keyframes animate-stripes {
+    0% {background-position: 0 0;} 100% {background-position: 60px 0;}
+}
+
+@keyframes animate-stripes-inverse {
+    100% {background-position: 0 0;} 0% {background-position: 60px 0;}
+}
