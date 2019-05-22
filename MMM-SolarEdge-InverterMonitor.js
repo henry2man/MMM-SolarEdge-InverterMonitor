@@ -9,13 +9,13 @@
 
 Module.register("MMM-SolarEdge-InverterMonitor", {
 	defaults: {
-		updateInterval: 60000,
+		updateInterval: 5000,
 		retryDelay: 5000
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
 
-	start: function() {
+	start: function () {
 		var self = this;
 		var dataRequest = null;
 		var dataNotification = null;
@@ -25,7 +25,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 		// Schedule update timer.
 		this.getData();
-		setInterval(function() {
+		setInterval(function () {
 			self.updateDom();
 		}, this.config.updateInterval);
 	},
@@ -36,15 +36,15 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 	 * get a URL request
 	 *
 	 */
-	getData: function() {
+	getData: function () {
 		var self = this;
 
-		var urlApi = "https://jsonplaceholder.typicode.com/posts/1";
+		var urlApi = "http://localhost:8081/data?k=1234";
 		var retry = true;
 
 		var dataRequest = new XMLHttpRequest();
 		dataRequest.open("GET", urlApi, true);
-		dataRequest.onreadystatechange = function() {
+		dataRequest.onreadystatechange = function () {
 			console.log(this.readyState);
 			if (this.readyState === 4) {
 				console.log(this.status);
@@ -72,19 +72,19 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 	 * argument delay number - Milliseconds before next update.
 	 *  If empty, this.config.updateInterval is used.
 	 */
-	scheduleUpdate: function(delay) {
+	scheduleUpdate: function (delay) {
 		var nextLoad = this.config.updateInterval;
 		if (typeof delay !== "undefined" && delay >= 0) {
 			nextLoad = delay;
 		}
-		nextLoad = nextLoad ;
+		nextLoad = nextLoad;
 		var self = this;
-		setTimeout(function() {
+		setTimeout(function () {
 			self.getData();
 		}, nextLoad);
 	},
 
-	getDom: function() {
+	getDom: function () {
 		var self = this;
 
 		// create element wrapper for show into the module
@@ -92,16 +92,29 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		// If this.dataRequest is not empty
 		if (this.dataRequest) {
 			var wrapperDataRequest = document.createElement("div");
-			// check format https://jsonplaceholder.typicode.com/posts/1
-			wrapperDataRequest.innerHTML = this.dataRequest.title;
 
 			var labelDataRequest = document.createElement("label");
 			// Use translate function
 			//             this id defined in translations files
 			labelDataRequest.innerHTML = this.translate("TITLE");
 
-
 			wrapper.appendChild(labelDataRequest);
+
+			// check request format 
+			let wrapperProduction = document.createElement("p");
+			wrapperProduction.innerHTML = this.translate("PRODUCTION") + ": " + this.dataRequest.Production_AC_Power_Net_WH;
+			wrapperDataRequest.appendChild(wrapperProduction);
+			let wrapperMeter = document.createElement("p");
+			wrapperMeter.innerHTML = this.translate("METER") + ": " + this.dataRequest.Consumption_AC_Power_Meter;
+			wrapperDataRequest.appendChild(wrapperMeter);
+			let wrapperConsumption = document.createElement("p");
+			wrapperConsumption.innerHTML = this.translate("CONSUMPTION") + ": " + this.dataRequest.Consumption_AC_Power_Net_WH;
+			wrapperDataRequest.appendChild(wrapperConsumption);
+			let wrapperTemperature = document.createElement("p");
+			wrapperTemperature.innerHTML = this.translate("TEMPERATURE") + ": " + this.dataRequest.Temperature_C;
+			wrapperDataRequest.appendChild(wrapperTemperature);
+
+
 			wrapper.appendChild(wrapperDataRequest);
 		}
 
@@ -109,14 +122,14 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		if (this.dataNotification) {
 			var wrapperDataNotification = document.createElement("div");
 			// translations  + datanotification
-			wrapperDataNotification.innerHTML =  this.translate("UPDATE") + ": " + this.dataNotification.date;
+			wrapperDataNotification.innerHTML = this.translate("UPDATE") + ": " + this.dataNotification.date;
 
 			wrapper.appendChild(wrapperDataNotification);
 		}
 		return wrapper;
 	},
 
-	getScripts: function() {
+	getScripts: function () {
 		return [];
 	},
 
@@ -127,7 +140,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 	},
 
 	// Load translations files
-	getTranslations: function() {
+	getTranslations: function () {
 		//FIXME: This can be load a one file javascript definition
 		return {
 			en: "translations/en.json",
@@ -135,10 +148,10 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		};
 	},
 
-	processData: function(data) {
+	processData: function (data) {
 		var self = this;
 		this.dataRequest = data;
-		if (this.loaded === false) { self.updateDom(self.config.animationSpeed) ; }
+		if (this.loaded === false) { self.updateDom(self.config.animationSpeed); }
 		this.loaded = true;
 
 		// the data if load
@@ -148,7 +161,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 	// socketNotificationReceived from helper
 	socketNotificationReceived: function (notification, payload) {
-		if(notification === "MMM-SolarEdge-InverterMonitor-NOTIFICATION_TEST") {
+		if (notification === "MMM-SolarEdge-InverterMonitor-NOTIFICATION_TEST") {
 			// set dataNotification
 			this.dataNotification = payload;
 			this.updateDom();

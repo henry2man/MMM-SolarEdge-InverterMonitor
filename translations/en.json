@@ -1,4 +1,8 @@
 {
-  "TITLE": "Title",
-  "UPDATE": "Update"
+  "TITLE": "SolarEdge",
+  "UPDATE": "Update",
+  "PRODUCTION": "Production", 
+  "METER": "Meter",
+  "CONSUMPTION": "Consumption", 
+  "TEMPERATURE": "Temperature"
 }
