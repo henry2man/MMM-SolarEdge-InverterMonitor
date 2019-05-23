@@ -90,19 +90,22 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		var self = this;
 
 		// create element wrapper for show into the module
+
+		<header class="module-header">Prediccion Tocina, ES</header>
+
 		var wrapper = document.createElement("div");
 		wrapper.id = "InverterMonitor";
 
 		// If this.dataRequest is not empty
 		if (this.dataRequest) {
+			var header = document.createElement("header");
+			header.className ="module-header"
 
-
-			var labelDataRequest = document.createElement("label");
 			// Use translate function
 			//             this id defined in translations files
-			labelDataRequest.innerHTML = this.translate("TITLE");
+			header.innerHTML = this.translate("TITLE");
 
-			wrapper.appendChild(labelDataRequest);
+			wrapper.appendChild(header);
 
 			var wrapperDataRequest = document.createElement("div");
 			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, self.config.maxProduction);
