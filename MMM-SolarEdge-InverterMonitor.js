@@ -90,9 +90,6 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		var self = this;
 
 		// create element wrapper for show into the module
-
-		<header class="module-header">Prediccion Tocina, ES</header>
-
 		var wrapper = document.createElement("div");
 		wrapper.id = "InverterMonitor";
 
