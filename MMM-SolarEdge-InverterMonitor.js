@@ -13,8 +13,8 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		retryDelay: 5000,
 		server: "http://localhost:8081/data?k=1234",
 		maxProduction: 2500,
-		maxConsumption: -100,
-		maxTemperature: 70
+		maxConsumption: -2500,
+		maxTemperature: 60
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
@@ -107,8 +107,8 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			var wrapperDataRequest = document.createElement("div");
 			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, self.config.maxProduction);
 			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.maxConsumption);
-			self.showBar(wrapper, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.maxProduction);
-			self.showBar(wrapper, "TEMPERATURE", "Cº", this.dataRequest.Temperature_C, self.config.maxTemperature);
+			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.maxProduction);
+			self.showBar(wrapperDataRequest, "TEMPERATURE", "Cº", this.dataRequest.Temperature_C, self.config.maxTemperature);
 
 			// check request format 
 			/*
