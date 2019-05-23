@@ -117,8 +117,8 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 	showBar: function (wrapper, element, unit, data, minValue, maxValue) {
 
-		let percent = Math.min(1, (data<0 ? data/minValue: data/maxValue)) * 100;
-		let warning = data > maxValue || data < minValue;
+		let percent = Math.min(1, Math.abs((data<0 ? data/minValue: data/maxValue))) * 100;
+		let warning = data > maxValue || da  ta < minValue;
 
 		let labelWrapper = document.createElement("p");
 		labelWrapper.className = "label" + (warning? " warning": "");
