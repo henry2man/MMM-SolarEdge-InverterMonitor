@@ -12,7 +12,7 @@
 
  /*  Progress Bars https://catalin.red/stylish-css3-progress-bars/ */
  
- #InverterMonitor p.label {
+.MMM-SolarEdge-InverterMonitor p.label {
      margin: 0.1em;
      padding: 0.1em;
      line-height: 0.6em;
@@ -20,12 +20,13 @@
      font-size: 0.6em;
  }
 
- #InverterMonitor p.warning {
+.MMM-SolarEdge-InverterMonitor p.warning {
      color: red;
      background: url(./warning.png) right center no-repeat;
+     background-size: 0.9em
  }
 
- #InverterMonitor .progress-bar {
+.MMM-SolarEdge-InverterMonitor .progress-bar {
     background-color: #1a1a1a;
     height: 15px;
     padding: 5px;
@@ -35,7 +36,7 @@
     box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
 }
 
-#InverterMonitor .progress-bar span {
+.MMM-SolarEdge-InverterMonitor .progress-bar span {
     display: block;
     height: 100%;
     border-radius: 3px;
@@ -43,27 +44,27 @@
     transition: width .4s ease-in-out;    
 }
 
-#InverterMonitor .progress-bar span.inverse {
+.MMM-SolarEdge-InverterMonitor .progress-bar span.inverse {
     float: right;
 }
 
 
-#InverterMonitor .high span, #InverterMonitor .low span.inverse {
+.MMM-SolarEdge-InverterMonitor .high span,.MMM-SolarEdge-InverterMonitor .low span.inverse {
     background-color: #f51010;
     background-image: linear-gradient(top, #f51010, #ad0000);  
 }
 
-#InverterMonitor .medium span, #InverterMonitor .medium span.inverse {
+.MMM-SolarEdge-InverterMonitor .medium span,.MMM-SolarEdge-InverterMonitor .medium span.inverse {
       background-color: #fecf23;
       background-image: linear-gradient(top, #fecf23, #fd9215);  
 }   
 
-#InverterMonitor .low span, #InverterMonitor .high span.inverse {
+.MMM-SolarEdge-InverterMonitor .low span,.MMM-SolarEdge-InverterMonitor .high span.inverse {
       background-color: #a5df41;
       background-image: linear-gradient(top, #a5df41, #4ca916);  
 }
 
-#InverterMonitor .stripes span {
+.MMM-SolarEdge-InverterMonitor .stripes span {
     background-size: 30px 30px;
     background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
                         transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
@@ -72,7 +73,7 @@
     animation: animate-stripes 3s linear infinite;             
 }
 
-#InverterMonitor .stripes span.inverse {
+.MMM-SolarEdge-InverterMonitor .stripes span.inverse {
     background-size: 30px 30px;
     background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
                         transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,

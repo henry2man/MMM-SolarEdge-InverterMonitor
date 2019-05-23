@@ -91,7 +91,6 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 		// create element wrapper for show into the module
 		var wrapper = document.createElement("div");
-		wrapper.id = "InverterMonitor";
 
 		// If this.dataRequest is not empty
 		if (this.dataRequest) {
