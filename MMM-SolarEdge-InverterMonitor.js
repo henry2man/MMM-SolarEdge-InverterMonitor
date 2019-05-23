@@ -105,25 +105,10 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			wrapper.appendChild(header);
 
 			var wrapperDataRequest = document.createElement("div");
-			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, self.config.maxProduction);
-			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.maxConsumption);
-			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.maxProduction);
-			self.showBar(wrapperDataRequest, "TEMPERATURE", "Cº", this.dataRequest.Temperature_C, self.config.maxTemperature);
-
-			// check request format 
-			/*
-			let wrapperMeter = document.createElement("p");
-			wrapperMeter.innerHTML = this.translate("METER") + ": " + ;
-			wrapperDataRequest.appendChild(wrapperMeter);
-			let wrapperConsumption = document.createElement("p");
-			wrapperConsumption.innerHTML = this.translate("CONSUMPTION") + ": " + this.dataRequest.Consumption_AC_Power_Net_WH;
-			wrapperDataRequest.appendChild(wrapperConsumption);
-			let wrapperTemperature = document.createElement("p");
-			wrapperTemperature.innerHTML = this.translate("TEMPERATURE") + ": " + this.dataRequest.Temperature_C;
-			wrapperDataRequest.appendChild(wrapperTemperature);
-
-			
-*/
+			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, 0, self.config.maxProduction);
+			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.maxConsumption, 0);
+			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.maxConsumption, self.config.maxProduction);
+			self.showBar(wrapperDataRequest, "TEMPERATURE", "Cº", this.dataRequest.Temperature_C, -10, self.config.maxTemperature);
 
 			wrapper.appendChild(wrapperDataRequest);
 		}
@@ -131,10 +116,10 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		return wrapper;
 	},
 
-	showBar: function (wrapper, element, unit, data, maxValue) {
+	showBar: function (wrapper, element, unit, data, minValue, maxValue) {
 
-		let percent = Math.min(data / maxValue, 1) * 100;
-		let warning = Math.abs(data) > Math.abs(maxValue);
+		let percent = Math.abs((data - minValue) / (maxValue-minValue) * 100);
+		let warning = data > maxValue || data < minValue;
 
 		let labelWrapper = document.createElement("p");
 		labelWrapper.className = "label" + (warning? " warning": "");
@@ -143,7 +128,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 		let newWrapper = document.createElement("div");
 		newWrapper.id = "bar-div-" + element;
-		newWrapper.className = "progress-bar stripes" + (percent < 0.33 ? " high" : percent < 0.5 ? " medium " : " low");
+		newWrapper.className = "progress-bar stripes" + (percent < 0.34 ? " high" : percent < 0.67 ? " medium " : " low");
 
 		let spanWrapper = document.createElement("span");
 		spanWrapper.style.width = percent + "%";
