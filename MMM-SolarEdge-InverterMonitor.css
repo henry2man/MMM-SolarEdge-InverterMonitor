@@ -11,7 +11,11 @@
 
 
  /*  Progress Bars https://catalin.red/stylish-css3-progress-bars/ */
- 
+
+.MMM-SolarEdge-InverterMonitor {
+    width: 350px;
+}
+
 .MMM-SolarEdge-InverterMonitor p.label {
      margin: 0.1em;
      padding: 0.1em;

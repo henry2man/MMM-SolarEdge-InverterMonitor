@@ -106,7 +106,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, self.config.powerRange[0], self.config.powerRange[1]);
 			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.powerRange[0], self.config.powerRange[1]);
 			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.powerRange[0], self.config.powerRange[1]);
-			self.showBar(wrapperDataRequest, "TEMPERATURE", "Cº", this.dataRequest.Temperature_C, self.config.temperatureRange[0], self.config.temperatureRange[1]);
+			self.showBar(wrapperDataRequest, "TEMPERATURE", "ºC", this.dataRequest.Temperature_C, self.config.temperatureRange[0], self.config.temperatureRange[1]);
 
 			wrapper.appendChild(wrapperDataRequest);
 		}
