@@ -48,22 +48,6 @@
     float: right;
 }
 
-
-.MMM-SolarEdge-InverterMonitor .high span,.MMM-SolarEdge-InverterMonitor .low span.inverse {
-    background-color: #f51010;
-    background-image: linear-gradient(top, #f51010, #ad0000);  
-}
-
-.MMM-SolarEdge-InverterMonitor .medium span,.MMM-SolarEdge-InverterMonitor .medium span.inverse {
-      background-color: #fecf23;
-      background-image: linear-gradient(top, #fecf23, #fd9215);  
-}   
-
-.MMM-SolarEdge-InverterMonitor .low span,.MMM-SolarEdge-InverterMonitor .high span.inverse {
-      background-color: #a5df41;
-      background-image: linear-gradient(top, #a5df41, #4ca916);  
-}
-
 .MMM-SolarEdge-InverterMonitor .stripes span {
     background-size: 30px 30px;
     background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
@@ -79,7 +63,7 @@
                         transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
                         transparent 75%, transparent);            
     
-    animation: animate-stripes-inverse 3s linear infinite;             
+    animation: animate-stripes-inverse 3s linear infinite;
 }
 
 @keyframes animate-stripes {

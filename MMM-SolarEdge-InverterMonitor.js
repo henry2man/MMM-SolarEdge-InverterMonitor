@@ -12,9 +12,8 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		updateInterval: 10000,
 		retryDelay: 5000,
 		server: "http://localhost:8081/data?k=1234",
-		maxProduction: 2500,
-		maxConsumption: -2500,
-		maxTemperature: 60
+		powerRange: [-2800, 2200],
+		temperatureRange: [0, 60]
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
@@ -95,7 +94,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		// If this.dataRequest is not empty
 		if (this.dataRequest) {
 			var header = document.createElement("header");
-			header.className ="module-header"
+			header.className = "module-header"
 
 			// Use translate function
 			//             this id defined in translations files
@@ -104,10 +103,10 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			wrapper.appendChild(header);
 
 			var wrapperDataRequest = document.createElement("div");
-			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, 0, self.config.maxProduction);
-			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.maxConsumption, 0);
-			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.maxConsumption, self.config.maxProduction);
-			self.showBar(wrapperDataRequest, "TEMPERATURE", "Cº", this.dataRequest.Temperature_C, -10, self.config.maxTemperature);
+			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, self.config.powerRange[0], self.config.powerRange[1]);
+			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.powerRange[0], self.config.powerRange[1]);
+			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.powerRange[0], self.config.powerRange[1]);
+			self.showBar(wrapperDataRequest, "TEMPERATURE", "Cº", this.dataRequest.Temperature_C, self.config.temperatureRange[0], self.config.temperatureRange[1]);
 
 			wrapper.appendChild(wrapperDataRequest);
 		}
@@ -117,21 +116,98 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 	showBar: function (wrapper, element, unit, data, minValue, maxValue) {
 
-		let percent = Math.min(1, Math.abs((data<0 ? data/minValue: data/maxValue))) * 100;
-		let warning = data > maxValue || da  ta < minValue;
+		/*let percent = Math.min(1, (data < 0 ?
+				 (data-minValue) / Math.abs(maxValue - minValue) 
+				 : (data - minValue) / Math.abs(maxValue-minValue))) * 100;
+		*/
+		/*	let percent = Math.min(1, Math.abs(data < 0 ?
+				(data - minValue)/ maxValue - minValue
+				: (data - minValue)  / maxValue - minValue)) * 100;
+				*/
+
+		let center =
+			(1 - Math.abs(minValue / (minValue - maxValue))) * 100;
+
+		let percent =
+			(data < 0 ?
+				Math.min(
+					1 - (center / 100)
+					,(Math.abs(data / minValue))) * (center / 100)
+				:
+				Math.min(
+					(center / 100), 
+
+					(data / maxValue) * ((center) / 100)
+					)
+			) * 100;
+
+		let warning = data > maxValue || data < minValue;
+
+
+		const positiveColors = [[212, 226, 132], [0, 173, 14]];
+		const negativeColors = [[255, 238, 82], [173, 0, 14]];
+
+		let colorRed = (data < 0 ?
+			// little
+			negativeColors[0][0] +
+			// relative
+			Math.round(((negativeColors[1][0] - negativeColors[0][0]) * percent) / 100)
+			:
+
+			// little
+			positiveColors[0][0] +
+			// relative
+			Math.round(((positiveColors[1][0] - positiveColors[0][0]) * percent) / 100)
+
+		);
+
+		let colorGreen = (data < 0 ?
+			// little
+			negativeColors[0][1] +
+			// relative
+			Math.round(((negativeColors[1][1] - negativeColors[0][1]) * percent) / 100)
+			:
+			// little
+			positiveColors[0][1] +
+			// relative
+			Math.round(((positiveColors[1][1] - positiveColors[0][1]) * percent) / 100)
+		);;
+		let colorBlue = (data < 0 ?
+			// little
+			negativeColors[0][2] +
+			// relative
+			Math.round(((negativeColors[1][2] - negativeColors[0][2]) * percent) / 100)
+			:
+
+			// little
+			positiveColors[0][2] +
+			// relative
+			Math.round(((positiveColors[1][2] - positiveColors[0][2]) * percent) / 100)
+		);
 
 		let labelWrapper = document.createElement("p");
-		labelWrapper.className = "label" + (warning? " warning": "");
-		labelWrapper.innerHTML = this.translate(element) + ": " + data + " " + unit
+		labelWrapper.className = "label" + (warning ? " warning" : "");
+		labelWrapper.style.color = "rgb(" + colorRed + ", " + colorGreen + ", " + colorBlue + ")";
+		labelWrapper.innerHTML = this.translate(element) + ": " + data + " " + unit ;
 		wrapper.appendChild(labelWrapper);
 
 		let newWrapper = document.createElement("div");
 		newWrapper.id = "bar-div-" + element;
-		newWrapper.className = "progress-bar stripes" + (percent < 0.34 ? " high" : percent < 0.67 ? " medium " : " low");
+
+		// + (percent < 34 ? " low" : percent < 67 ? " medium " : " high");
+		newWrapper.className = "progress-bar stripes";
 
 		let spanWrapper = document.createElement("span");
+
 		spanWrapper.style.width = percent + "%";
+		if (data < 0) {
+			spanWrapper.style.marginRight = center + "%";
+		} else {
+			spanWrapper.style.marginLeft = (100 - center) + "%";
+		}
 		spanWrapper.className = (data < 0 ? "inverse" : "");
+
+		spanWrapper.style.backgroundColor = "rgb(" + colorRed + ", " + colorGreen + ", " + colorBlue + ")";
 
 		newWrapper.appendChild(spanWrapper);
 
