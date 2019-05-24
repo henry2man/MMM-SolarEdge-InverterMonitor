@@ -12,7 +12,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		updateInterval: 10000,
 		retryDelay: 5000,
 		server: "http://localhost:8081/data?k=1234",
-		powerRange: [-2800, 2200],
+		powerRange: [-2500, 2200],
 		temperatureRange: [0, 60]
 	},
 
@@ -102,6 +102,11 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 			wrapper.appendChild(header);
 
+			let statusWrapper = document.createElement("p");
+			statusWrapper.className = "status" +
+				(this.dataRequest.Consumption_AC_Power_Meter < 0 ?
+					" consuming" : " dumping");
+
 			var wrapperDataRequest = document.createElement("div");
 			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, self.config.powerRange[0], self.config.powerRange[1]);
 			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.powerRange[0], self.config.powerRange[1]);
@@ -109,21 +114,20 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			self.showBar(wrapperDataRequest, "TEMPERATURE", "ºC", this.dataRequest.Temperature_C, self.config.temperatureRange[0], self.config.temperatureRange[1]);
 
 			wrapper.appendChild(wrapperDataRequest);
+
+			statusWrapper.innerHTML = this.translate("STATUS")
+				+ ": " +
+				(this.dataRequest.Consumption_AC_Power_Meter < 0 ?
+					"<strong class='consuming'>" + this.translate("CONSUMING") + "</strong>" :
+					"<strong class='dumping'>" + this.translate("DUMPING") + "</strong>");
+
+			wrapper.appendChild(statusWrapper);
 		}
 
 		return wrapper;
 	},
 
 	showBar: function (wrapper, element, unit, data, minValue, maxValue) {
-
-		/*let percent = Math.min(1, (data < 0 ?
-				 (data-minValue) / Math.abs(maxValue - minValue) 
-				 : (data - minValue) / Math.abs(maxValue-minValue))) * 100;
-		*/
-		/*	let percent = Math.min(1, Math.abs(data < 0 ?
-				(data - minValue)/ maxValue - minValue
-				: (data - minValue)  / maxValue - minValue)) * 100;
-				*/
 
 		let center =
 			(1 - Math.abs(minValue / (minValue - maxValue))) * 100;
@@ -132,13 +136,13 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			(data < 0 ?
 				Math.min(
 					1 - (center / 100)
-					,(Math.abs(data / minValue))) * (center / 100)
+					, (Math.abs(data / minValue))) * (center / 100)
 				:
 				Math.min(
-					(center / 100), 
+					(center / 100),
 
 					(data / maxValue) * ((center) / 100)
-					)
+				)
 			) * 100;
 
 		let warning = data > maxValue || data < minValue;
@@ -147,48 +151,55 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		const positiveColors = [[212, 226, 132], [0, 173, 14]];
 		const negativeColors = [[255, 238, 82], [173, 0, 14]];
 
+
+		let factor = 100 * (data < 0 ?
+			Math.min(data / minValue, 1)
+			:
+			Math.min(data / maxValue, 1));
+
 		let colorRed = (data < 0 ?
 			// little
 			negativeColors[0][0] +
 			// relative
-			Math.round(((negativeColors[1][0] - negativeColors[0][0]) * percent) / 100)
+			Math.round(((negativeColors[1][0] - negativeColors[0][0]) * factor) / 100)
 			:
 
 			// little
 			positiveColors[0][0] +
 			// relative
-			Math.round(((positiveColors[1][0] - positiveColors[0][0]) * percent) / 100)
+			Math.round(((positiveColors[1][0] - positiveColors[0][0]) * factor) / 100)
 
 		);
+
 
 		let colorGreen = (data < 0 ?
 			// little
 			negativeColors[0][1] +
 			// relative
-			Math.round(((negativeColors[1][1] - negativeColors[0][1]) * percent) / 100)
+			Math.round(((negativeColors[1][1] - negativeColors[0][1]) * factor) / 100)
 			:
 			// little
 			positiveColors[0][1] +
 			// relative
-			Math.round(((positiveColors[1][1] - positiveColors[0][1]) * percent) / 100)
-		);;
+			Math.round(((positiveColors[1][1] - positiveColors[0][1]) * factor) / 100)
+		);
+
 		let colorBlue = (data < 0 ?
 			// little
 			negativeColors[0][2] +
 			// relative
-			Math.round(((negativeColors[1][2] - negativeColors[0][2]) * percent) / 100)
+			Math.round(((negativeColors[1][2] - negativeColors[0][2]) * factor) / 100)
 			:
-
 			// little
 			positiveColors[0][2] +
 			// relative
-			Math.round(((positiveColors[1][2] - positiveColors[0][2]) * percent) / 100)
+			Math.round(((positiveColors[1][2] - positiveColors[0][2]) * factor) / 100)
 		);
 
 		let labelWrapper = document.createElement("p");
 		labelWrapper.className = "label" + (warning ? " warning" : "");
 		labelWrapper.style.color = "rgb(" + colorRed + ", " + colorGreen + ", " + colorBlue + ")";
-		labelWrapper.innerHTML = this.translate(element) + ": " + data + " " + unit ;
+		labelWrapper.innerHTML = this.translate(element) + ": " + data + " " + unit;
 		wrapper.appendChild(labelWrapper);
 
 		let newWrapper = document.createElement("div");

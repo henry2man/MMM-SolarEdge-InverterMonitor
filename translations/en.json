@@ -1,8 +1,11 @@
 {
-  "TITLE": "SolarEdge",
+  "TITLE": "Solar Plant",
   "UPDATE": "Update",
   "PRODUCTION": "Production", 
   "METER": "Meter",
   "CONSUMPTION": "Consumption", 
-  "TEMPERATURE": "Temperature"
+  "TEMPERATURE": "Inverter temp",
+  "STATUS": "Status",
+  "CONSUMING": "Consuming", 
+  "DUMPING": "Dumping Energy"
 }
