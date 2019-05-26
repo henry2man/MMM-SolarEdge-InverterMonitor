@@ -7,5 +7,6 @@
   "TEMPERATURE": "Inverter temp",
   "STATUS": "Status",
   "CONSUMING": "Consuming", 
+  "INSSUFICIENT": "Inssuficient Production",
   "DUMPING": "Dumping Energy"
 }

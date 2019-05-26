@@ -7,6 +7,15 @@
  * MIT Licensed.
  */
 
+
+// Colors
+const limeToGreen = [[212, 226, 132], [0, 173, 14]];
+const yellowToRed = [[255, 238, 82], [173, 0, 14]];
+const blueToRed = [[38, 0, 255], [255, 0, 0]];
+const blueToPurple = [[38, 0, 255], [174, 0, 255]];
+
+const resourcesPath = "/modules/MMM-SolarEdge-InverterMonitor/vendor/";
+
 Module.register("MMM-SolarEdge-InverterMonitor", {
 	defaults: {
 		updateInterval: 10000,
@@ -93,7 +102,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 		// If this.dataRequest is not empty
 		if (this.dataRequest) {
-			var header = document.createElement("header");
+			let header = document.createElement("header");
 			header.className = "module-header"
 
 			// Use translate function
@@ -102,23 +111,69 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 			wrapper.appendChild(header);
 
+			let iconDiv = document.createElement("div");
+			iconDiv.className = "icons"
+
+			let iconSolar = document.createElement("img");
+			iconSolar.src = resourcesPath + "/itim2101/solar-energy-" + (
+				this.dataRequest.Production_AC_Power_Net_WH > 0 ? "positive" : "off") + ".svg";
+			iconDiv.appendChild(iconSolar);
+
+			let iconSolarHome = document.createElement("img");
+			iconSolarHome.src = resourcesPath + "/itim2101/exchange-" +
+				(this.dataRequest.Production_AC_Power_Net_WH > 0 ? "positive" : "off")
+				+ ".svg";
+			iconDiv.appendChild(iconSolarHome);
+
+			let iconHome = document.createElement("img");
+			iconHome.src = resourcesPath + "/itim2101/home-" +
+				(this.dataRequest.Consumption_AC_Power_Meter > 0 ? "positive" : "negative")
+				+ ".svg";
+			iconDiv.appendChild(iconHome);
+
+			let iconHomeNet = document.createElement("img");
+			iconHomeNet.src = resourcesPath + "/itim2101/exchange-" +
+				(this.dataRequest.Consumption_AC_Power_Meter > 0 ? "positive" : "negative")
+				+ ".svg";
+			iconDiv.appendChild(iconHomeNet);
+
+			let icon = document.createElement("img");
+			icon.src = resourcesPath + "/itim2101/electric-tower-"
+				+
+				(this.dataRequest.Consumption_AC_Power_Meter < 0 ? "negative" : "off")
+				+ ".svg";
+			iconDiv.appendChild(icon);
+
+			wrapper.appendChild(iconDiv);
+
 			let statusWrapper = document.createElement("p");
 			statusWrapper.className = "status" +
 				(this.dataRequest.Consumption_AC_Power_Meter < 0 ?
 					" consuming" : " dumping");
 
 			var wrapperDataRequest = document.createElement("div");
-			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH, self.config.powerRange[0], self.config.powerRange[1]);
-			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH, self.config.powerRange[0], self.config.powerRange[1]);
-			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter, self.config.powerRange[0], self.config.powerRange[1]);
-			self.showBar(wrapperDataRequest, "TEMPERATURE", "ºC", this.dataRequest.Temperature_C, self.config.temperatureRange[0], self.config.temperatureRange[1]);
+
+
+
+			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH,
+				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
+			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH,
+				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
+			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter,
+				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
+			self.showBar(wrapperDataRequest, "TEMPERATURE", "ºC", this.dataRequest.Temperature_C,
+				self.config.temperatureRange[0], self.config.temperatureRange[1], blueToRed, blueToPurple);
 
 			wrapper.appendChild(wrapperDataRequest);
 
 			statusWrapper.innerHTML = this.translate("STATUS")
 				+ ": " +
 				(this.dataRequest.Consumption_AC_Power_Meter < 0 ?
-					"<strong class='consuming'>" + this.translate("CONSUMING") + "</strong>" :
+					(this.dataRequest.Production_AC_Power_Net_WH > 0 ?
+						"<strong class='inssuficient'>" + this.translate("INSSUFICIENT") + "</strong>" :
+						"<strong class='consuming'>" + this.translate("CONSUMING") + "</strong>"
+					)
+					:
 					"<strong class='dumping'>" + this.translate("DUMPING") + "</strong>");
 
 			wrapper.appendChild(statusWrapper);
@@ -127,8 +182,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		return wrapper;
 	},
 
-	showBar: function (wrapper, element, unit, data, minValue, maxValue) {
-
+	showBar: function (wrapper, element, unit, data, minValue, maxValue, positiveColors, negativeColors) {
 		let center =
 			(1 - Math.abs(minValue / (minValue - maxValue))) * 100;
 
@@ -146,11 +200,6 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			) * 100;
 
 		let warning = data > maxValue || data < minValue;
-
-
-		const positiveColors = [[212, 226, 132], [0, 173, 14]];
-		const negativeColors = [[255, 238, 82], [173, 0, 14]];
-
 
 		let factor = 100 * (data < 0 ?
 			Math.min(data / minValue, 1)

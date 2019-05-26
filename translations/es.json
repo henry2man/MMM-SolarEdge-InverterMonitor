@@ -7,5 +7,7 @@
   "TEMPERATURE": "Temp. Inversor",
   "STATUS": "Estado",
   "CONSUMING": "Consumiendo",
+  "INSSUFICIENT": "Producción insuficiente",
   "DUMPING": "Vertiendo a la red"
 }
+

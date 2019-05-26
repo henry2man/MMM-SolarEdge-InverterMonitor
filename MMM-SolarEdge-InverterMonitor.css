@@ -16,6 +16,15 @@
     width: 350px;
 }
 
+.MMM-SolarEdge-InverterMonitor .icons { 
+    text-align: center
+}
+
+.MMM-SolarEdge-InverterMonitor .icons img {
+    width: 14%;
+    margin: 0 3%;
+}
+
 .MMM-SolarEdge-InverterMonitor p.status {
     margin: 0.1em 0;
     padding: 0.1em 0;
@@ -26,6 +35,10 @@
 
 .MMM-SolarEdge-InverterMonitor p .consuming {
     color:rgb(255, 89, 89);
+}
+
+.MMM-SolarEdge-InverterMonitor p .inssuficient {
+    color:rgb(255, 238, 0);
 }
 
 .MMM-SolarEdge-InverterMonitor p .dumping {
