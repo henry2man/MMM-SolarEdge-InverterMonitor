@@ -191,23 +191,19 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		let center =
 			(1 - Math.abs(minValue / (minValue - maxValue))) * 100;
 
-		let percent =
-			(data < 0 ?
-				(data > minValue ?
-					(Math.abs(data / minValue)) * (center / 100)
-					: (1 - center / 100))
-				: (data > maxValue ?
-					(center / 100)
-					: (data / maxValue) * ((center) / 100)
-				)
-			) * 100;
-
-		let warning = data > maxValue || data < minValue;
 
 		let factor = 100 * (data < 0 ?
 			Math.min(data / minValue, 1)
 			:
 			Math.min(data / maxValue, 1));
+
+		let percent =
+			(data < 0 ? (factor * (1 - center / 100)) :
+				(factor * center / 100));
+
+		console.log("Element " + element + " - Center: " + center + "- Factor: " + factor + " %: " + percent)
+
+		let warning = data > maxValue || data < minValue;
 
 		let colorRed = (data < 0 ?
 			// little
