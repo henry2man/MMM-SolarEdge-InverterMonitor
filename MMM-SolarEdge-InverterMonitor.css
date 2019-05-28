@@ -16,15 +16,6 @@
     width: 350px;
 }
 
-.MMM-SolarEdge-InverterMonitor .icons { 
-    text-align: center
-}
-
-.MMM-SolarEdge-InverterMonitor .icons img {
-    width: 14%;
-    margin: 0 3%;
-}
-
 .MMM-SolarEdge-InverterMonitor p.status {
     margin: 0.1em 0;
     padding: 0.1em 0;
@@ -97,6 +88,37 @@
     
     animation: animate-stripes-inverse 3s linear infinite;
 }
+
+
+.MMM-SolarEdge-InverterMonitor .icons { 
+    text-align: center
+}
+
+.MMM-SolarEdge-InverterMonitor .icons img {
+    width: 16%;
+    margin: 0 1%
+}
+
+.MMM-SolarEdge-InverterMonitor .icons div {
+    width: 16%;
+    margin: 0 1% 0.5em;
+    display: inline-block;
+}
+
+
+.MMM-SolarEdge-InverterMonitor .icons div .off {
+    background-color: rgb(0, 0, 0);
+    animation:none;
+}
+
+.MMM-SolarEdge-InverterMonitor .icons div .positive {
+    background-color: rgb(0, 173, 14);
+}
+
+.MMM-SolarEdge-InverterMonitor .icons div .negative {
+    background-color: rgb(255, 145, 0);
+}
+
 
 @keyframes animate-stripes {
     0% {background-position: 0 0;} 100% {background-position: 60px 0;}

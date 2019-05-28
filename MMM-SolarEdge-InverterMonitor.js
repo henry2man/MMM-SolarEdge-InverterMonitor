@@ -119,10 +119,12 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 				this.dataRequest.Production_AC_Power_Net_WH > 0 ? "positive" : "off") + ".svg";
 			iconDiv.appendChild(iconSolar);
 
-			let iconSolarHome = document.createElement("img");
-			iconSolarHome.src = resourcesPath + "/itim2101/exchange-" +
-				(this.dataRequest.Production_AC_Power_Net_WH > 0 ? "positive" : "off")
-				+ ".svg";
+			let iconSolarHome = document.createElement("div");
+			iconSolarHome.className = "progress-bar stripes";
+			let spanSolarHome = document.createElement("span");
+			spanSolarHome.style.width = "100%";
+			spanSolarHome.className = (this.dataRequest.Production_AC_Power_Net_WH <= 0 ? "off" : "positive");
+			iconSolarHome.appendChild(spanSolarHome);
 			iconDiv.appendChild(iconSolarHome);
 
 			let iconHome = document.createElement("img");
@@ -131,11 +133,14 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 				+ ".svg";
 			iconDiv.appendChild(iconHome);
 
-			let iconHomeNet = document.createElement("img");
-			iconHomeNet.src = resourcesPath + "/itim2101/exchange-" +
-				(this.dataRequest.Consumption_AC_Power_Meter > 0 ? "positive" : "negative")
-				+ ".svg";
+			let iconHomeNet = document.createElement("div");
+			iconHomeNet.className = "progress-bar stripes";
+			let spanHomeNet = document.createElement("span");
+			spanHomeNet.style.width = "100%";
+			spanHomeNet.className = (this.dataRequest.Consumption_AC_Power_Meter < 0 ? "inverse negative" : "positive");
+			iconHomeNet.appendChild(spanHomeNet);
 			iconDiv.appendChild(iconHomeNet);
+
 
 			let icon = document.createElement("img");
 			icon.src = resourcesPath + "/itim2101/electric-tower-"
@@ -188,14 +193,12 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 		let percent =
 			(data < 0 ?
-				Math.min(
-					1 - (center / 100)
-					, (Math.abs(data / minValue))) * (center / 100)
-				:
-				Math.min(
-					(center / 100),
-
-					(data / maxValue) * ((center) / 100)
+				(data > minValue ?
+					(Math.abs(data / minValue)) * (center / 100)
+					: (1 - center / 100))
+				: (data > maxValue ?
+					(center / 100)
+					: (data / maxValue) * ((center) / 100)
 				)
 			) * 100;
 
@@ -253,12 +256,8 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 		let newWrapper = document.createElement("div");
 		newWrapper.id = "bar-div-" + element;
-
-		// + (percent < 34 ? " low" : percent < 67 ? " medium " : " high");
 		newWrapper.className = "progress-bar stripes";
-
 		let spanWrapper = document.createElement("span");
-
 		spanWrapper.style.width = percent + "%";
 		if (data < 0) {
 			spanWrapper.style.marginRight = center + "%";
