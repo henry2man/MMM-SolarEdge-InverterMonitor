@@ -254,6 +254,9 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		newWrapper.id = "bar-div-" + element;
 		newWrapper.className = "progress-bar stripes";
 		let spanWrapper = document.createElement("span");
+		if(self.config.animate) {
+			spanWrapper.className = "animated";
+		}
 		spanWrapper.style.width = percent + "%";
 		if (data < 0) {
 			spanWrapper.style.marginRight = center + "%";
