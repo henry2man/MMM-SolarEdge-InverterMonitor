@@ -262,9 +262,11 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 			spanWrapper.style.marginLeft = (100 - center) + "%";
 		}
 
-		spanWrapper.classList = [
-			self.config.animated ? "animated" : "",
-			(data < 0 ? "inverse" : "")];
+		spanWrapper.className = (data < 0 ? "inverse" : "");
+		// FIXME animation
+		//= [
+		//	self.config.animated ? "animated" : "",
+		//	(data < 0 ? "inverse" : "")];
 
 		spanWrapper.style.backgroundColor = "rgb(" + colorRed + ", " + colorGreen + ", " + colorBlue + ")";
 

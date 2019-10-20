@@ -81,9 +81,11 @@
                         transparent 75%, transparent);            
 }
 
+/* FIXME Animation
 .MMM-SolarEdge-InverterMonitor .stripes span.animated {
     animation: animate-stripes 3s linear infinite;             
 }
+*/ 
 
 .MMM-SolarEdge-InverterMonitor .stripes span.inverse {
     background-size: 30px 30px;
@@ -91,11 +93,12 @@
                         transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
                         transparent 75%, transparent);            
 }
+/* FIXME Animation
 
 .MMM-SolarEdge-InverterMonitor .stripes span.inverse.animated {
     animation: animate-stripes-inverse 3s linear infinite;
 }
-
+*/
 
 .MMM-SolarEdge-InverterMonitor .icons { 
     text-align: center
