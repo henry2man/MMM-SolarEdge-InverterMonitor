@@ -22,7 +22,8 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		retryDelay: 5000,
 		server: "http://localhost:8081/data?k=1234",
 		powerRange: [-2500, 2200],
-		temperatureRange: [0, 60]
+		temperatureRange: [0, 60],
+		animated: false
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror

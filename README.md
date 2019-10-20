@@ -2,7 +2,7 @@
 
 This is a module for the [MagicMirror²](https://github.com/MichMich/MagicMirror/).
 
-Todo: Insert description here!
+This module shows realtime stats from a Solar Edge inverter
 
 ## Using the module
 
