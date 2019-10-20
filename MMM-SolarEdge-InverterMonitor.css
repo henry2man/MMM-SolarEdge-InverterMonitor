@@ -67,7 +67,7 @@
 }
 
 .MMM-SolarEdge-InverterMonitor .progress-bar span.animated {
-    transition: width .4s ease-in-out;
+    /* transition: width .4s ease-in-out;*/
 }
 
 .MMM-SolarEdge-InverterMonitor .progress-bar span.inverse {
