@@ -173,6 +173,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 			if (self.config.showTemperature) {
 				let tempWrapper = document.createElement("p");
+				tempWrapper.className = "status";
 				tempWrapper.innerHTML =
 					" " + this.translate("TEMPERATURE") + ": "
 					+ this.dataRequest.Temperature_C + "ºC";
