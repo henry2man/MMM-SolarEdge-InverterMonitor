@@ -22,8 +22,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		retryDelay: 5000,
 		server: "http://localhost:8081/data?k=1234",
 		powerRange: [-2500, 2200],
-		temperatureRange: [0, 60], 
-		showTemperature: false, 
+		showTemperature: true,
 		debug: false
 		// FIXME animation
 		//,
@@ -163,18 +162,12 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 			var wrapperDataRequest = document.createElement("div");
 
-
-
 			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH,
 				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
 			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH,
 				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
 			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter,
 				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
-			if (self.config.showTemperature) {
-				self.showBar(wrapperDataRequest, "TEMPERATURE", "ºC", this.dataRequest.Temperature_C,
-					self.config.temperatureRange[0], self.config.temperatureRange[1], blueToRed, blueToPurple);
-			}
 
 			wrapper.appendChild(wrapperDataRequest);
 
@@ -186,7 +179,10 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 						"<strong class='consuming'>" + this.translate("CONSUMING") + "</strong>"
 					)
 					:
-					"<strong class='dumping'>" + this.translate("DUMPING") + "</strong>");
+					"<strong class='dumping'>" + this.translate("DUMPING") + "</strong>") +
+				(self.config.showTemperature ?
+					" " + this.translate("TEMPERATURE") + ": "
+					+ this.dataRequest.Temperature_C + "ºC" : "");
 
 			wrapper.appendChild(statusWrapper);
 		}
