@@ -171,6 +171,15 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 			wrapper.appendChild(wrapperDataRequest);
 
+			if (self.config.showTemperature) {
+				let tempWrapper = document.createElement("p");
+				tempWrapper.innerHTML =
+					" " + this.translate("TEMPERATURE") + ": "
+					+ this.dataRequest.Temperature_C + "ºC";
+
+				wrapper.appendChild(tempWrapper);
+			}
+
 			statusWrapper.innerHTML = this.translate("STATUS")
 				+ ": " +
 				(this.dataRequest.Consumption_AC_Power_Meter < 0 ?
@@ -179,12 +188,12 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 						"<strong class='consuming'>" + this.translate("CONSUMING") + "</strong>"
 					)
 					:
-					"<strong class='dumping'>" + this.translate("DUMPING") + "</strong>") +
-				(self.config.showTemperature ?
-					" " + this.translate("TEMPERATURE") + ": "
-					+ this.dataRequest.Temperature_C + "ºC" : "");
+					"<strong class='dumping'>" + this.translate("DUMPING") + "</strong>");
 
 			wrapper.appendChild(statusWrapper);
+
+
+
 		}
 
 		return wrapper;
