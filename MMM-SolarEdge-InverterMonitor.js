@@ -115,6 +115,7 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 			wrapper.appendChild(header);
 
+			// Icons
 			let iconDiv = document.createElement("div");
 			iconDiv.className = "icons"
 
@@ -155,21 +156,25 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 
 			wrapper.appendChild(iconDiv);
 
-			let statusWrapper = document.createElement("p");
-			statusWrapper.className = "status" +
-				(this.dataRequest.Consumption_AC_Power_Meter < 0 ?
-					" consuming" : " dumping");
+			// end iconDiv
 
-			var wrapperDataRequest = document.createElement("div");
+			// alt meters
 
-			self.showBar(wrapperDataRequest, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH,
-				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
-			self.showBar(wrapperDataRequest, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH,
-				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
-			self.showBar(wrapperDataRequest, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter,
-				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed);
+			var wrapperMeters = document.createElement("div");
 
-			wrapper.appendChild(wrapperDataRequest);
+			self.showMeter(wrapperMeters, "METER", "Wh", this.dataRequest.Consumption_AC_Power_Meter,
+				self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed, "large", false);
+
+			if(true || this.dataRequest.Production_AC_Power_Net_WH >0) {
+				self.showMeter(wrapperMeters, "PRODUCTION", "Wh", this.dataRequest.Production_AC_Power_Net_WH,
+					self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed, "normal", true);
+				self.showMeter(wrapperMeters, "CONSUMPTION", "Wh", this.dataRequest.Consumption_AC_Power_Net_WH,
+					self.config.powerRange[0], self.config.powerRange[1], limeToGreen, yellowToRed, "normal", true);
+			}
+
+			wrapper.appendChild(wrapperMeters);
+
+			// end alt meters
 
 			if (self.config.showTemperature) {
 				let tempWrapper = document.createElement("p");
@@ -181,6 +186,12 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 				wrapper.appendChild(tempWrapper);
 			}
 
+			// status
+			let statusWrapper = document.createElement("p");
+			statusWrapper.className = "status" +
+				(this.dataRequest.Consumption_AC_Power_Meter < 0 ?
+					" consuming" : " dumping");
+
 			statusWrapper.innerHTML = this.translate("STATUS")
 				+ ": " +
 				(this.dataRequest.Consumption_AC_Power_Meter < 0 ?
@@ -191,8 +202,9 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 					:
 					"<strong class='dumping'>" + this.translate("DUMPING") + "</strong>");
 
-			wrapper.appendChild(statusWrapper);
 
+			wrapper.appendChild(statusWrapper);
+			// end status
 
 
 		}
@@ -287,6 +299,68 @@ Module.register("MMM-SolarEdge-InverterMonitor", {
 		newWrapper.appendChild(spanWrapper);
 
 		wrapper.appendChild(newWrapper);
+	},
+
+	showMeter: function (wrapper, element, unit, data, minValue, maxValue, positiveColors, negativeColors, clazz, showTitle) {
+
+		var divMeters = document.createElement("div");
+		divMeters.className = clazz + " bright";
+
+		let factor = 100 * (data < 0 ?
+			Math.min(data / minValue, 1)
+			:
+			Math.min(data / maxValue, 1));
+
+
+		let warning = data > maxValue || data < minValue;
+
+		let colorRed = (data < 0 ?
+			// little
+			negativeColors[0][0] +
+			// relative
+			Math.round(((negativeColors[1][0] - negativeColors[0][0]) * factor) / 100)
+			:
+
+			// little
+			positiveColors[0][0] +
+			// relative
+			Math.round(((positiveColors[1][0] - positiveColors[0][0]) * factor) / 100)
+
+		);
+
+
+		let colorGreen = (data < 0 ?
+			// little
+			negativeColors[0][1] +
+			// relative
+			Math.round(((negativeColors[1][1] - negativeColors[0][1]) * factor) / 100)
+			:
+			// little
+			positiveColors[0][1] +
+			// relative
+			Math.round(((positiveColors[1][1] - positiveColors[0][1]) * factor) / 100)
+		);
+
+		let colorBlue = (data < 0 ?
+			// little
+			negativeColors[0][2] +
+			// relative
+			Math.round(((negativeColors[1][2] - negativeColors[0][2]) * factor) / 100)
+			:
+			// little
+			positiveColors[0][2] +
+			// relative
+			Math.round(((positiveColors[1][2] - positiveColors[0][2]) * factor) / 100)
+		);
+
+		let labelWrapper = document.createElement("span");
+		labelWrapper.className = "label" + (warning ? " warning" : "");
+		labelWrapper.style.color = "rgb(" + colorRed + ", " + colorGreen + ", " + colorBlue + ")";
+		labelWrapper.innerHTML = (showTitle?this.translate(element) + ": " : "") + data + " " + unit;
+
+		divMeters.appendChild(labelWrapper);
+
+		wrapper.appendChild(divMeters);
 	},
 
 	getScripts: function () {
