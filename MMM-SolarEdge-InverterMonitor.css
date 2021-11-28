@@ -135,3 +135,20 @@
 @keyframes animate-stripes-inverse {
     100% {background-position: 0 0;} 0% {background-position: 60px 0;}
 }
+
+.semaphore{   
+    height:20px;
+    width:20px;
+    border-radius:10px;
+    border: 1px solid grey;
+    margin:20px; 
+  }
+  .go {
+    background-color:green;
+  }
+  .attention {
+    background-color:yellow;
+  }
+  .stop {
+    background-color:red;
+  }
